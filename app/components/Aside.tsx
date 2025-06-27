@@ -5,8 +5,9 @@ import {
   useEffect,
   useState,
 } from 'react';
+import {X} from 'lucide-react';
 
-type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
+type AsideType = 'search' | 'cart' | 'mobile' | 'mobile-menu' | 'closed';
 type AsideContextValue = {
   type: AsideType;
   open: (mode: AsideType) => void;
@@ -55,19 +56,45 @@ export function Aside({
   return (
     <div
       aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
+      className={`fixed inset-0 z-50 ${expanded ? 'block' : 'hidden'}`}
       role="dialog"
+      data-type={type}
     >
-      <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={close}
+      />
+
+      {/* Panel */}
+      <div 
+        className={`
+          fixed top-4 bottom-4 right-4 w-full max-w-[432px] bg-black
+          transform transition-transform duration-300 ease-in-out
+          ${expanded ? 'translate-x-0' : 'translate-x-full'}
+          overflow-y-auto
+          clip-path-aside
+          text-white
+          shadow-[0_0_30px_rgba(255,255,255,0.1)]
+        `}
+      >
+        {/* Header */}
+        <header className="sticky top-0 z-10 flex items-center justify-between p-6 bg-black/80 backdrop-blur-sm">
+          <h3 className="text-white font-oxanium text-2xl uppercase tracking-wider">{heading}</h3>
+          <button 
+            onClick={close} 
+            className="text-white hover:text-neutral-400 transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6" />
           </button>
         </header>
-        <main>{children}</main>
-      </aside>
+
+        {/* Content */}
+        <main className="relative text-white">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

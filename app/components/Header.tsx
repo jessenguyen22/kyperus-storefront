@@ -8,7 +8,9 @@ import {
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {useEffect} from 'react';
-import {Menu} from 'lucide-react';
+import {Menu, Search as SearchIcon, Skull, Hexagon} from 'lucide-react';
+import {MatrixNavLink} from './MatrixNavLink';
+import {MobileMenu} from './MobileMenu';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -26,17 +28,15 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {shop, menu} = header;
-
   const [isScrolled, setIsScrolled] = useState(false);
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const {type: asideType} = useAside();
+  const {type: asideType, open} = useAside();
 
   useEffect(() => {
     const root = document.documentElement;
-
     root.style.setProperty('--announcement-height', isScrolled ? '0' : '40px');
-    root.style.setProperty('--header-height', isScrolled ? '64px' : '80px');
+    root.style.setProperty('--header-height', 'auto');
 
     const handleScroll = () => {
       if (asideType === 'closed') return;
@@ -54,74 +54,81 @@ export function Header({
   }, [lastScrollY, isScrolled, asideType]);
 
   return (
-    <div
-      className={`fixed z-40 w-full bg-white transition-transform duration-500 ease-in-out
-      ${isScrolled && !isScrollingUp && asideType === 'closed' ? '-translate-y-full' : 'translate-y-0'}`}
-    >
-      {/* Announcement */}
+    <>
       <div
-        className={`announcement-bar overflow-hidden transition-all duration-500 ease-in-out bg-black text-white ${isScrolled ? 'max-h-0' : 'max-h-12'}`}
+        className={`fixed z-40 w-full bg-black transition-transform duration-500 ease-in-out
+        ${isScrolled && !isScrollingUp && asideType === 'closed' ? '-translate-y-full' : 'translate-y-0'}`}
       >
-        <div className="container mx-auto text-center px-4 py-2 text-sm">
-          <p className="font-oxanium text-[14px] leading-tight sm:text-[16px] font-light tracking-wider">
-            Free shipping on orders over $100
-          </p>
+        {/* Announcement */}
+        <div
+          className={`announcement-bar overflow-hidden transition-all duration-500 ease-in-out bg-black text-white border-b border-white/10 ${isScrolled ? 'max-h-0 border-opacity-0' : 'max-h-8 border-opacity-100'}`}
+        >
+          <div className="container mx-auto text-center px-4 py-1 text-sm">
+            <p className="font-oxanium text-[14px] leading-tight sm:text-[16px] font-light tracking-wider">
+              Free shipping on orders over $100
+            </p>
+          </div>
         </div>
+        {/* Main Header */}
+        <header
+          className={`h-auto transition-all duration-500 ease-in-out ${isScrolled ? 'bg-black/80 backdrop-blur-lg shadow-md border-transparent' : 'bg-black border-b border-neutral-800'}`}
+        >
+          <div className="container mx-auto">
+            {/* Header Content */}
+            <div
+              className={`relative flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ease-in-out max-lg:py-6 lg:py-2`}
+            >
+              {/* Mobile Menu Toggle */}
+              <div className="lg:hidden">
+                <button
+                  onClick={() => open('mobile-menu')}
+                  className="p-2 -ml-2 text-white hover:text-neutral-400 transition-colors"
+                >
+                  <Menu className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Desktop Navigation */}
+              <div className="hidden lg:flex lg:w-1/3">
+                <HeaderMenu
+                  menu={menu}
+                  viewport="desktop"
+                  primaryDomainUrl={header.shop.primaryDomain.url}
+                  publicStoreDomain={publicStoreDomain}
+                />
+              </div>
+
+              {/* Logo - Responsive for both mobile and desktop */}
+              <div className="max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2 lg:w-1/3 lg:flex lg:items-center lg:justify-center">
+                <NavLink
+                  prefetch="intent"
+                  to="/"
+                  className="block"
+                >
+                  <img 
+                    src="/images/logo_kyperus_w.png" 
+                    alt={shop.name}
+                    className={`h-auto transition-all duration-300 ease-in-out ${isScrolled ? 'w-24' : 'w-[120px]'}`}
+                  />
+                </NavLink>
+              </div>
+
+              {/* Right actions - Search and Cart */}
+              <div className="lg:w-1/3 lg:flex lg:items-center lg:justify-end">
+                <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+              </div>
+            </div>
+          </div>
+        </header>
       </div>
-      {/* Main Header */}
-      <header
-        className={`transition-all duration-500 ease-in-out ${isScrolled ? 'bg-white/80 backdrop-blur-lg shadow-md border-transparent' : 'bg-white border-b border-gray-200'}`}
-      >
-        <div className="container mx-auto">
-          {/* Mobile Logo 550px and below  */}
-          <div
-            className={`hidden max-[550px]:block text-center border-b border-gray-100 transition-all duration-300 ease-in-out ${isScrolled ? 'py-1' : 'py-2'}`}
-          >
-            <NavLink
-              prefetch="intent"
-              to="/"
-              className="font-sans text-2xl tracking-normal inline-block"
-              end
-            >
-              <h1 className="font-bold font-oxanium text-sm text-center">
-                {shop.name}
-              </h1>
-            </NavLink>
-          </div>
-          {/* Header Content */}
-          <div
-            className={`flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ease-in-out 
-            ${isScrolled ? 'py-3 sm:py-4' : ''}`}
-          >
-            {/* Mobile Menu Toggle */}
-            <div className="lg:hidden">
-              <HeaderMenuMobileToggle />
-            </div>
-            {/* Desktop Logo */}
-            <NavLink
-              prefetch="intent"
-              to="/"
-              className={`font-oxanium tracking-wider text-center max-[550px]:hidden absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:text-left transition-all duration-300 ease-in-out ${isScrolled ? 'text-xl sm:text-2xl' : 'text-base sm:text-[28px]'}`}
-            >
-              <h1 className="font-bold">{shop.name}</h1>
-            </NavLink>
-            {/* Desktop Navigation */}
-            <div className="hidden lg:block flex-1 px-12">
-              <HeaderMenu
-                menu={menu}
-                viewport="desktop"
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-              {/* Desktop CTAs */}
-              {/* <div className='hidden lg:block'>
-                  <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-                </div> */}
-            </div>
-          </div>
-        </div>
-      </header>
-    </div>
+
+      {/* Mobile Menu */}
+      <MobileMenu
+        menu={menu}
+        publicStoreDomain={publicStoreDomain}
+        primaryDomainUrl={header.shop.primaryDomain.url}
+      />
+    </>
   );
 }
 
@@ -136,35 +143,26 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  const className = `header-menu-${viewport}`;
   const {close} = useAside();
 
-  // Replace your current baseClassName with:
-  const baseClassName =
-    'relative transition-all duration-500 ease-in-out font-oxanium px-4 py-2 bg-gradient-to-r from-transparent from-50% to-black to-50% bg-[length:400%] bg-[position:25%] hover:bg-[position:100%] hover:text-white border border-transparent hover:border-black';
-
   const desktopClassName =
-    'grid grid-flow-col auto-cols-max gap-12 text-sm uppercase justify-center';
+    'flex items-center gap-12 text-sm uppercase justify-center text-white';
   const mobileClassName =
-    'flex flex-col items-center justify-center space-x-4 text-sm uppercase';
+    'flex flex-col items-center justify-center space-y-4 text-sm uppercase';
+
   return (
     <nav
       className={viewport === 'desktop' ? desktopClassName : mobileClassName}
       role="navigation"
     >
       {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={close}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
-          Home
-        </NavLink>
+        <div className="w-full text-center">
+          <MatrixNavLink to="/" onClick={() => close()}>
+            Home
+          </MatrixNavLink>
+        </div>
       )}
       {viewport === 'desktop' &&
-        // Destop menu
         menu?.items.map((item) => {
           if (!item.url) return null;
           const url =
@@ -174,18 +172,13 @@ export function HeaderMenu({
               ? new URL(item.url).pathname
               : item.url;
           return (
-            <NavLink
+            <MatrixNavLink
               key={item.id}
               to={url}
-              onClick={close}
-              prefetch="intent"
-              className={({isActive}) =>
-                `${baseClassName}  ${isActive ? 'bg-[position:100%] text-white' : 'text-black'}`
-              }
-              end
+              onClick={() => close()}
             >
               {item.title}
-            </NavLink>
+            </MatrixNavLink>
           );
         })}
     </nav>
@@ -197,38 +190,23 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
-          </Await>
-        </Suspense>
-      </NavLink>
+    <nav className="flex items-center gap-4 text-white" role="navigation">
       <SearchToggle />
       <CartToggle cart={cart} />
     </nav>
   );
 }
 
-function HeaderMenuMobileToggle() {
-  const {open} = useAside();
-  return (
-    <button
-      className="p-2 -ml-2 hover:text-gray-500 transition-colors duration-300"
-      onClick={() => open('mobile')}
-    >
-      <Menu className="w-6 h-6" />
-    </button>
-  );
-}
-
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
+    <button 
+      className="relative group header-icon-button" 
+      onClick={() => open('search')}
+      aria-label="Search"
+    >
+      <Hexagon className="w-12 h-12 text-white/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:text-white/30 transition-colors" strokeWidth={1} />
+      <SearchIcon className="w-6 h-6 relative z-10 group-hover:text-neutral-400 transition-colors" strokeWidth={1.5} />
     </button>
   );
 }
@@ -238,10 +216,9 @@ function CartBadge({count}: {count: number | null}) {
   const {publish, shop, cart, prevCart} = useAnalytics();
 
   return (
-    <a
-      href="/cart"
-      onClick={(e) => {
-        e.preventDefault();
+    <button
+      className="relative group header-icon-button"
+      onClick={() => {
         open('cart');
         publish('cart_viewed', {
           cart,
@@ -250,9 +227,16 @@ function CartBadge({count}: {count: number | null}) {
           url: window.location.href || '',
         } as CartViewPayload);
       }}
+      aria-label="Cart"
     >
-      Cart {count === null ? <span>&nbsp;</span> : count}
-    </a>
+      <Hexagon className="w-12 h-12 text-white/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:text-white/30 transition-colors" strokeWidth={1} />
+      <Skull className="w-6 h-6 relative z-10 group-hover:text-neutral-400 transition-colors" strokeWidth={1.5} />
+      {count !== null && count > 0 && (
+        <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold z-20">
+          {count}
+        </span>
+      )}
+    </button>
   );
 }
 

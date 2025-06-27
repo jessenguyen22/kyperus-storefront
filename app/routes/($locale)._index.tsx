@@ -7,7 +7,7 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
-import {HeroBanner} from '~/components/HeroBanner';
+
 
 
 export const meta: MetaFunction = () => {
@@ -64,6 +64,10 @@ export default function Homepage() {
     <div className="home">
       
       <FeaturedCollection collection={data.featuredCollection} />
+      <RecommendedProducts products={data.recommendedProducts} />
+      <RecommendedProducts products={data.recommendedProducts} />
+      <RecommendedProducts products={data.recommendedProducts} />
+      <RecommendedProducts products={data.recommendedProducts} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
   );
