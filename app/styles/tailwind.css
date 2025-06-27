@@ -4,3 +4,10 @@
  */
 
 @import 'tailwindcss';
+
+@theme {
+  --color-primary-500: red;
+  --color-accent-500: blue;
+  --font-oxanium: 'Oxanium', sans-serif;
+  --font-sans: 'Source Sans 3', sans-serif;
+}

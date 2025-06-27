@@ -4,7 +4,7 @@
     "./**/*.ts",
     "./**/*.tsx",
     ".react-router/types/**/*"
-  ],
+, "tailwind.config.js"  ],
   "compilerOptions": {
     "lib": [
       "DOM",

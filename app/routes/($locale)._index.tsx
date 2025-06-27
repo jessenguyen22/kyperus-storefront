@@ -7,6 +7,8 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
+import {HeroBanner} from '~/components/HeroBanner';
+
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -60,6 +62,7 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -95,7 +98,7 @@ function RecommendedProducts({
 }) {
   return (
     <div className="recommended-products">
-      <h2 style={{color: 'red'}}>Recommended Products II</h2>
+      <h2 className='text-4xl font-bold text-accent-500 text-center mb-5 underline font-oxanium'>Recommended Products II</h2>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {(response) => (

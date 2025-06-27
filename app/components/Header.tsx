@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import {Await, NavLink, useAsyncValue} from 'react-router';
 import {
   type CartViewPayload,
@@ -7,6 +7,8 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {useEffect} from 'react';
+import {Menu} from 'lucide-react';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -24,19 +26,102 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {shop, menu} = header;
+
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrollingUp, setIsScrollingUp] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const {type: asideType} = useAside();
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.style.setProperty('--announcement-height', isScrolled ? '0' : '40px');
+    root.style.setProperty('--header-height', isScrolled ? '64px' : '80px');
+
+    const handleScroll = () => {
+      if (asideType === 'closed') return;
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 50);
+      setIsScrollingUp(currentScrollY < lastScrollY);
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, {passive: true});
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY, isScrolled, asideType]);
+
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-    </header>
+    <div
+      className={`fixed z-40 w-full bg-white transition-transform duration-500 ease-in-out
+      ${isScrolled && !isScrollingUp && asideType === 'closed' ? '-translate-y-full' : 'translate-y-0'}`}
+    >
+      {/* Announcement */}
+      <div
+        className={`announcement-bar overflow-hidden transition-all duration-500 ease-in-out bg-black text-white ${isScrolled ? 'max-h-0' : 'max-h-12'}`}
+      >
+        <div className="container mx-auto text-center px-4 py-2 text-sm">
+          <p className="font-oxanium text-[14px] leading-tight sm:text-[16px] font-light tracking-wider">
+            Free shipping on orders over $100
+          </p>
+        </div>
+      </div>
+      {/* Main Header */}
+      <header
+        className={`transition-all duration-500 ease-in-out ${isScrolled ? 'bg-white/80 backdrop-blur-lg shadow-md border-transparent' : 'bg-white border-b border-gray-200'}`}
+      >
+        <div className="container mx-auto">
+          {/* Mobile Logo 550px and below  */}
+          <div
+            className={`hidden max-[550px]:block text-center border-b border-gray-100 transition-all duration-300 ease-in-out ${isScrolled ? 'py-1' : 'py-2'}`}
+          >
+            <NavLink
+              prefetch="intent"
+              to="/"
+              className="font-sans text-2xl tracking-normal inline-block"
+              end
+            >
+              <h1 className="font-bold font-oxanium text-sm text-center">
+                {shop.name}
+              </h1>
+            </NavLink>
+          </div>
+          {/* Header Content */}
+          <div
+            className={`flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ease-in-out 
+            ${isScrolled ? 'py-3 sm:py-4' : ''}`}
+          >
+            {/* Mobile Menu Toggle */}
+            <div className="lg:hidden">
+              <HeaderMenuMobileToggle />
+            </div>
+            {/* Desktop Logo */}
+            <NavLink
+              prefetch="intent"
+              to="/"
+              className={`font-oxanium tracking-wider text-center max-[550px]:hidden absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:text-left transition-all duration-300 ease-in-out ${isScrolled ? 'text-xl sm:text-2xl' : 'text-base sm:text-[28px]'}`}
+            >
+              <h1 className="font-bold">{shop.name}</h1>
+            </NavLink>
+            {/* Desktop Navigation */}
+            <div className="hidden lg:block flex-1 px-12">
+              <HeaderMenu
+                menu={menu}
+                viewport="desktop"
+                primaryDomainUrl={header.shop.primaryDomain.url}
+                publicStoreDomain={publicStoreDomain}
+              />
+              {/* Desktop CTAs */}
+              {/* <div className='hidden lg:block'>
+                  <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+                </div> */}
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
   );
 }
 
@@ -54,8 +139,19 @@ export function HeaderMenu({
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
 
+  // Replace your current baseClassName with:
+  const baseClassName =
+    'relative transition-all duration-500 ease-in-out font-oxanium px-4 py-2 bg-gradient-to-r from-transparent from-50% to-black to-50% bg-[length:400%] bg-[position:25%] hover:bg-[position:100%] hover:text-white border border-transparent hover:border-black';
+
+  const desktopClassName =
+    'grid grid-flow-col auto-cols-max gap-12 text-sm uppercase justify-center';
+  const mobileClassName =
+    'flex flex-col items-center justify-center space-x-4 text-sm uppercase';
   return (
-    <nav className={className} role="navigation">
+    <nav
+      className={viewport === 'desktop' ? desktopClassName : mobileClassName}
+      role="navigation"
+    >
       {viewport === 'mobile' && (
         <NavLink
           end
@@ -67,30 +163,31 @@ export function HeaderMenu({
           Home
         </NavLink>
       )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
-
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={close}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
+      {viewport === 'desktop' &&
+        // Destop menu
+        menu?.items.map((item) => {
+          if (!item.url) return null;
+          const url =
+            item.url.includes('myshopify.com') ||
+            item.url.includes(publicStoreDomain) ||
+            item.url.includes(primaryDomainUrl)
+              ? new URL(item.url).pathname
+              : item.url;
+          return (
+            <NavLink
+              key={item.id}
+              to={url}
+              onClick={close}
+              prefetch="intent"
+              className={({isActive}) =>
+                `${baseClassName}  ${isActive ? 'bg-[position:100%] text-white' : 'text-black'}`
+              }
+              end
+            >
+              {item.title}
+            </NavLink>
+          );
+        })}
     </nav>
   );
 }
@@ -119,10 +216,10 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      className="p-2 -ml-2 hover:text-gray-500 transition-colors duration-300"
       onClick={() => open('mobile')}
     >
-      <h3>☰</h3>
+      <Menu className="w-6 h-6" />
     </button>
   );
 }
