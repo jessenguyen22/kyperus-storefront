@@ -146,7 +146,7 @@ export function HeaderMenu({
   const {close} = useAside();
 
   const desktopClassName =
-    'flex items-center gap-12 text-sm uppercase justify-center text-white';
+    'flex items-center gap-6 text-sm uppercase justify-center text-white';
   const mobileClassName =
     'flex flex-col items-center justify-center space-y-4 text-sm uppercase';
 

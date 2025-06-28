@@ -35,6 +35,15 @@ export function Aside({
 }) {
   const {type: activeType, close} = useAside();
   const expanded = type === activeType;
+  
+  // Determine positioning and spacing based on aside type
+  const isMobileMenu = type === 'mobile-menu' || type === 'mobile';
+  const positionClasses = isMobileMenu
+    ? 'left-0 right-auto mr-6'  // For mobile menu: stick to left, margin on right
+    : 'right-0 left-auto ml-6'; // For cart/search: stick to right, margin on left
+  const transformClasses = isMobileMenu
+    ? expanded ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
+    : expanded ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0';
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -56,26 +65,40 @@ export function Aside({
   return (
     <div
       aria-modal
-      className={`fixed inset-0 z-50 ${expanded ? 'block' : 'hidden'}`}
+      className={`
+        fixed inset-0 z-50 transition-all duration-300 ease-in-out
+        ${expanded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+      `}
       role="dialog"
       data-type={type}
     >
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      <button 
+        className={`
+          absolute inset-0 bg-black/60 backdrop-blur-sm 
+          transition-opacity duration-300 ease-in-out
+          ${expanded ? 'opacity-100' : 'opacity-0'}
+        `}
         onClick={close}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === 'Space') {
+            close();
+          }
+        }}
+        aria-label="Close panel"
       />
 
       {/* Panel */}
       <div 
         className={`
-          fixed top-4 bottom-4 right-4 w-full max-w-[432px] bg-black
-          transform transition-transform duration-300 ease-in-out
-          ${expanded ? 'translate-x-0' : 'translate-x-full'}
+          fixed top-6 bottom-6 ${positionClasses} w-[calc(100%-1.5rem)] sm:w-[480px] bg-black
+          transform transition-all duration-300 ease-in-out
+          ${transformClasses}
           overflow-y-auto
           clip-path-aside
           text-white
           shadow-[0_0_30px_rgba(255,255,255,0.1)]
+          cyberpunk-scrollbar
         `}
       >
         {/* Header */}
@@ -83,7 +106,7 @@ export function Aside({
           <h3 className="text-white font-oxanium text-2xl uppercase tracking-wider">{heading}</h3>
           <button 
             onClick={close} 
-            className="text-white hover:text-neutral-400 transition-colors"
+            className="text-white hover:text-neutral-400 transition-colors cursor-pointer"
             aria-label="Close"
           >
             <X className="w-6 h-6" />

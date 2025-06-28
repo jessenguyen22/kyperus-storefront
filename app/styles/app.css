@@ -9,6 +9,50 @@
   opacity: 1;
 }
 
+/* Cyberpunk Scrollbar Styles */
+.cyberpunk-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #333333 rgba(0, 0, 0, 0.2);
+}
+
+.cyberpunk-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cyberpunk-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.cyberpunk-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    #333333,
+    #444444
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  clip-path: polygon(
+    0 5px,
+    5px 0,
+    100% 0,
+    100% calc(100% - 5px),
+    calc(100% - 5px) 100%,
+    0 100%
+  );
+}
+
+.cyberpunk-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    #444444,
+    #555555
+  );
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
 /* Mobile menu clip path */
 .clip-path-active {
   clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
@@ -105,24 +149,7 @@ img {
   opacity: 1;
 }
 
-/* Mobile Menu Styles */
-[data-type="mobile-menu"] aside {
-  background: black;
-  color: white;
-  position: fixed;
-  inset: 0;
-  width: 90%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  z-index: 50;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-}
-
-[data-type="mobile-menu"].expanded aside {
-  transform: translateX(0);
-}
+/* Mobile Menu Styles - positioning now handled in component */
 
 [data-type="mobile-menu"] aside header {
   display: flex;
@@ -162,23 +189,7 @@ img {
   }
 }
 
-/* Other Aside Types (Cart, Search, etc.) */
-[data-type="cart"] aside,
-[data-type="search"] aside {
-  background: var(--color-light);
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
-  height: 100vh;
-  width: min(var(--aside-width), 100vw);
-  position: fixed;
-  right: calc(-1 * var(--aside-width));
-  top: 0;
-  transition: transform 200ms ease-in-out;
-}
-
-[data-type="cart"].expanded aside,
-[data-type="search"].expanded aside {
-  transform: translateX(calc(var(--aside-width) * -1));
-}
+/* Other Aside Types (Cart, Search, etc.) - positioning now handled in component */
 
 [data-type="cart"] aside header,
 [data-type="search"] aside header {
@@ -778,4 +789,8 @@ button.reset:hover:not(:has(> *)) {
   border: 0.5px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1),
     inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+h1, h2, h3, h4, h5, h6, p, small, button, input, textarea, select, label {
+  font-family: 'Oxanium', sans-serif;
 }
