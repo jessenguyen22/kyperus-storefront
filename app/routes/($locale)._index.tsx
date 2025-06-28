@@ -7,6 +7,7 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
+import {HeroBanner} from '~/components/HeroBanner';
 
 
 
@@ -62,8 +63,7 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      
-      <FeaturedCollection collection={data.featuredCollection} />
+        
       <RecommendedProducts products={data.recommendedProducts} />
       <RecommendedProducts products={data.recommendedProducts} />
       <RecommendedProducts products={data.recommendedProducts} />

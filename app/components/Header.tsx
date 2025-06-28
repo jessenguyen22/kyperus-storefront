@@ -39,7 +39,6 @@ export function Header({
     root.style.setProperty('--header-height', 'auto');
 
     const handleScroll = () => {
-      if (asideType === 'closed') return;
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 50);
       setIsScrollingUp(currentScrollY < lastScrollY);
@@ -56,14 +55,14 @@ export function Header({
   return (
     <>
       <div
-        className={`fixed z-40 w-full bg-black transition-transform duration-500 ease-in-out
-        ${isScrolled && !isScrollingUp && asideType === 'closed' ? '-translate-y-full' : 'translate-y-0'}`}
+        className={`sticky top-0 z-40 w-full bg-black transition-transform duration-500 ease-in-out
+        ${isScrolled && !isScrollingUp ? '-translate-y-full' : 'translate-y-0'}`}
       >
         {/* Announcement */}
         <div
-          className={`announcement-bar overflow-hidden transition-all duration-500 ease-in-out bg-black text-white border-b border-white/10 ${isScrolled ? 'max-h-0 border-opacity-0' : 'max-h-8 border-opacity-100'}`}
+          className={`announcement-bar overflow-hidden transition-all duration-300 ease-in-out bg-black text-white border-b border-white/10 ${isScrolled ? 'h-0 py-0 border-opacity-0' : 'h-8 py-1 border-opacity-100'}`}
         >
-          <div className="container mx-auto text-center px-4 py-1 text-sm">
+          <div className="container mx-auto text-center px-4 text-sm">
             <p className="font-oxanium text-[14px] leading-tight sm:text-[16px] font-light tracking-wider">
               Free shipping on orders over $100
             </p>
