@@ -1,0 +1,146 @@
+{% comment %}
+  渲染菜单，自动判断菜单类型，菜单类型：链接，下拉菜单，Mega菜单
+  Accepts:
+    - enable_hover_open: {Boolean} 是否允许鼠标悬停打开菜单
+
+  Usage:
+  {% render 'header-menu' %}
+{% endcomment %}
+
+<nav class="header-menu-nav">
+    <ul class="list-menu list-menu--inline">
+      {%- for link in section.settings.menu.links -%}
+          {% comment %}获取属于该菜单的Mega菜单id列表{% endcomment %}
+          {% liquid
+              assign mega_ids_string = ''
+              assign bubble = blank
+              assign menu_index = forloop.index
+  
+              for block in section.blocks
+                  if block.settings.target_id == menu_index
+                      if block.type == 'bubble'
+                          assign bubble = block
+                      else
+                          unless mega_ids_string == ''
+                              assign mega_ids_string = mega_ids_string | append: ','
+                          endunless
+                          assign mega_ids_string = mega_ids_string | append: forloop.index
+                      endif
+                  endif
+              endfor
+  
+              assign mega_ids = mega_ids_string | split: ','
+          %}
+        <li class="list-menu-item header-menu-first-level">
+          {%- unless link.links == blank and mega_ids == empty -%}
+            <drop-menu class="first-level-drop"{% if enable_hover_open %} data-hover-open{% endif %}>
+              <details class="details-header-menu{% if mega_ids != empty %} mega-menu{% endif %}"{% if mega_ids == empty %} data-constrain{% endif %}>
+                <summary class="first-level-item" aria-haspopup="true" aria-expanded="false" aria-controls="Menu-{{ link.handle | capitalize }}">
+                  {%- if bubble != blank -%}
+                    <span class="menu-bubble" style="background-color: {{ bubble.settings.background_color }}; color: {{ bubble.settings.foreground_color }};" {{ bubble.shopify_attributes }}>
+                         {%- if bubble.settings.icon != 'none' -%}
+                             {% render 'icon-sets', icon: bubble.settings.icon %}
+                             <span class="visually-hidden">{{ bubble.settings.icon }}</span>
+                         {%- endif -%}
+                        {{ bubble.settings.text | escape }}
+                    </span>
+                  {%- endif -%}
+                  <a class="link{%- if link.child_active or link.url != '/' and link.current %} header-active-menu-item{% endif %}"
+                      {% if link.url != blank and link.url != '/' %}
+                           href="{{ link.url }}"
+                      {% else %}
+                          role="link"
+                          aria-disabled="true"
+                      {% endif %}
+                      {% if link.current %}
+                          aria-current="page"
+                      {% endif %}
+                  >
+                    {{- link.title | escape -}}
+                  </a>
+                  {% render 'icon-sets', icon: 'caret' %}
+                </summary>
+                {%- if mega_ids != empty -%}
+                  {% render "mega-menu", link: link, mega_ids: mega_ids %}
+                {%- else -%}
+                  <ul id="Menu-{{ link.handle | capitalize }}"
+                      class="header-submenu list-menu list-menu--disclosure color-{{ settings.main_color_scheme }} gradient"
+                      aria-label="Submenu for {{ link.title | escape }}"
+                      tabindex="-1" {% comment %} tabindex="-1" 是为了打开菜单后，防止菜单容器因为失去焦点而关闭 {% endcomment %}
+                  >
+                      {%- for childlink in link.links -%}
+                          <li class="list-menu-item header-menu-second-level">
+                              {%- if childlink.links == blank -%}
+                                  <a class="link link-text"
+                                     href="{{ childlink.url }}"
+                                     {% if childlink.current %}aria-current="page"{% endif %}
+                                  >
+                                      {{- childlink.title | escape -}}
+                                  </a>
+                              {%- else -%}
+                                  <drop-menu {% if enable_hover_open %} data-hover-open{% endif %}>
+                                      <details class="details-header-submenu" data-constrain>
+                                          <summary aria-haspopup="true" aria-expanded="false" aria-controls="Menu-{{ link.handle | capitalize }}-{{ childlink.handle | capitalize }}">
+                                              <a class="link"
+                                              {% if childlink.url != blank and childlink.url != '/' %}
+                                                  href="{{ childlink.url }}"
+                                              {% else %}
+                                                  role="link"
+                                                  aria-disabled="true"
+                                              {% endif %}
+                                              {% if childlink.current %}
+                                                  aria-current="page"
+                                              {% endif %}
+                                              >
+                                                  {{- childlink.title | escape -}}
+                                              </a>
+                                              {% render 'icon-sets', icon: 'caret' %}
+                                          </summary>
+                                          <ul id="Menu-{{ link.handle | capitalize }}-{{ childlink.handle | capitalize }}"
+                                              class="header-submenu list-menu list-menu--disclosure list-menu-second--disclosure"
+                                              aria-label="Submenu for {{ childlink.title | escape }}"
+                                          >
+                                              {%- for grandchildlink in childlink.links -%}
+                                                  <li class="list-menu-item">
+                                                      <a class="link link-text"
+                                                         href="{{ grandchildlink.url }}"
+                                                         {% if grandchildlink.current %}aria-current="page"{% endif %}
+                                                      >
+                                                          {{ grandchildlink.title | escape }}
+                                                      </a>
+                                                  </li>
+                                              {%- endfor -%}
+                                          </ul>
+                                      </details>
+                                  </drop-menu>
+                              {%- endif -%}
+                          </li>
+                      {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </details>
+            </drop-menu>
+          {%- else -%}
+            <a class="link first-level-item"
+               href="{{ link.url }}"
+               {% if link.current %}aria-current="page"{% endif %}
+            >
+                {%- if bubble != blank -%}
+                    <span class="menu-bubble" style="background-color: {{ bubble.settings.background_color }}; color: {{ bubble.settings.foreground_color }};">
+                        {%- if bubble.settings.icon != 'none' -%}
+                          {% render 'icon-sets', icon: bubble.settings.icon %}
+                          <span class="visually-hidden">{{ bubble.settings.icon }}</span>
+                        {%- endif -%}
+                        {{ bubble.settings.text | escape }}
+                    </span>
+                {%- endif -%}
+                <span{%- if link.current %} class="header-active-menu-item"{% endif %}>
+                    {{- link.title | escape -}}
+                </span>
+            </a>
+          {%- endunless -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+  

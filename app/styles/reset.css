@@ -1,0 +1,52 @@
+/* Dark Theme Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Ensure all major containers have dark background */
+#root,
+[data-react-root],
+.app {
+  background-color: #000000;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* Reset button and form elements to inherit dark theme */
+
+input,
+textarea,
+select {
+  background-color: inherit;
+  color: inherit;
+  border: 1px solid #333333;
+}
+
+/* Ensure links are visible on dark background */
+a {
+  color: #ffffff;
+}
+
+a:hover {
+  color: #cccccc;
+}

@@ -1,0 +1,382 @@
+{% comment %}
+  Renders a header drawer menu for mobile and desktop.
+  Usage:
+  {% render 'header-drawer' %}
+{% endcomment %}
+<link rel="stylesheet" href="{{ 'component-header-drawer.css' | asset_url }}" media="print" onload="this.media='all';">
+
+<header-drawer>
+  <details class="menu-drawer-details">
+    <summary
+      class="menu-summary menu-toggle-button"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-label="{{ 'sections.header.menu' | t }}"
+      aria-controls="Header-Menu-Drawer"
+    >
+      <span class="button button--icon button--ethereal">
+        <svg class="hamburger" viewBox="0 0 100 100" width="80">
+          <path class="line top" d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+          <path class="line middle" d="m 30,50 h 40" />
+          <path class="line bottom" d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+        </svg>
+      </span>
+    </summary>
+    <div
+      id="Header-Menu-Drawer"
+      class="menu-drawer"
+      tabindex="-1"
+    >
+      <div class="menu-drawer-inner color-{{ settings.main_color_scheme }} gradient">
+        <div class="drawer-header medium-hide large-up-hide">
+          {%- if shop.customer_accounts_enabled -%}
+            <a
+              class="button button--secondary button--pill button--full-width"
+              href="{% if customer %}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{% endif %}"
+              rel="nofollow"
+            >
+              {% render 'icon-sets', icon: 'account' %}
+              {%- if customer -%}
+                {{ 'customer.account.title' | t }}
+              {%- else -%}
+                {{ 'customer.log_in' | t }}
+              {%- endif -%}
+            </a>
+          {%- endif -%}
+          <modal-opener
+            class="button button--pill"
+            role="button"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="Search-Drawer"
+            aria-label="{{ 'templates.search.search' | t }}"
+          >
+            <a href="{{ routes.search_url }}" class="link">
+              {% render 'icon-sets', icon: 'search' %}
+            </a>
+          </modal-opener>
+        </div>
+        <div class="drawer-content">
+          <nav class="menu-drawer-nav hidden-scrollbar">
+            <ul class="menu-drawer-menu has-submenu" data-level="1">
+              {%- for link in section.settings.menu.links -%}
+                {% liquid
+                  assign mega_ids_string = ''
+                  assign bubble = blank
+                  assign menu_index = forloop.index
+
+                  for block in section.blocks
+                    if block.settings.target_id == menu_index
+                      if block.type == 'bubble'
+                        assign bubble = block
+                      else
+                        unless mega_ids_string == ''
+                          assign mega_ids_string = mega_ids_string | append: ','
+                        endunless
+                        assign mega_ids_string = mega_ids_string | append: forloop.index
+                      endif
+                    endif
+                  endfor
+
+                  assign mega_ids = mega_ids_string | split: ','
+                %}
+
+                <li class="menu-drawer-menu-item header-menu-first-level{% if link.current %} menu-item--active{% endif %}">
+                  {%- if link.links != blank or mega_ids != empty -%}
+                    <details data-belong="1">
+                      <summary
+                        class="menu-summary first-level-item focus-inset"
+                        aria-expanded="false"
+                        aria-controls="Drawer-Menu-{{ link.handle | capitalize }}"
+                      >
+                        <a
+                          class="link"
+                          {% if link.url != blank and link.url != '/' %}
+                            href="{{ link.url }}"
+                          {% else %}
+                            role="link"
+                            aria-disabled="true"
+                          {% endif %}
+                          {% if link.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{ link.title | escape }}
+                          {% if bubble != blank %}
+                            <span
+                              class="menu-bubble"
+                              style="background-color: {{ bubble.settings.background_color }}; color: {{ bubble.settings.foreground_color }};"
+                              {{ bubble.shopify_attributes }}
+                            >
+                              {%- if bubble.settings.icon != 'none' -%}
+                                {% render 'icon-sets', icon: bubble.settings.icon %}
+                                <span class="visually-hidden">{{ bubble.settings.icon }}</span>
+                              {%- endif -%}
+                              {{ bubble.settings.text | escape }}
+                            </span>
+                          {% endif %}
+                        </a>
+                        {% render 'icon-sets', icon: 'caret' %}
+                      </summary>
+                      <div
+                        id="Drawer-Menu-{{ link.handle | capitalize }}"
+                        class="menu-drawer-submenu has-submenu hidden-scrollbar"
+                        tabindex="-1"
+                        data-level="2"
+                        aria-label="Submenu for {{ link.title | escape }}"
+                      >
+                        <div class="submenu-wrapper hidden-scrollbar">
+                          <ul class="menu-drawer-menu" tabindex="-1">
+                            {%- for childlink in link.links -%}
+                              <li class="menu-drawer-menu-item header-menu-second-level{% if childlink.current %} menu-item--active{% endif %}">
+                                {%- if childlink.links == blank -%}
+                                  <div class="menu-link-wrapper">
+                                    <a
+                                      class="link link-full focus-inset"
+                                      href="{{ childlink.url }}"
+                                      {% if childlink.current %}
+                                        aria-current="page"
+                                      {% endif %}
+                                    >
+                                      {{ childlink.title | escape }}
+                                    </a>
+                                  </div>
+                                {%- else -%}
+                                  <details data-belong="2">
+                                    <summary
+                                      class="menu-summary focus-inset"
+                                      aria-expanded="false"
+                                      aria-controls="Drawer-Menu-{{ link.handle | capitalize }}-{{ childlink.handle | capitalize }}"
+                                    >
+                                      <a
+                                        class="link"
+                                        {% if childlink.url != blank and childlink.url != '/' %}
+                                          href="{{ childlink.url }}"
+                                        {% else %}
+                                          role="link"
+                                          aria-disabled="true"
+                                        {% endif %}
+                                        {% if childlink.current %}
+                                          aria-current="page"
+                                        {% endif %}
+                                      >
+                                        {{ childlink.title | escape }}
+                                      </a>
+                                      {% render 'icon-sets', icon: 'caret' %}
+                                    </summary>
+                                    <div
+                                      id="Drawer-Menu-{{ link.handle | capitalize }}-{{ childlink.handle | capitalize }}"
+                                      class="menu-drawer-submenu has-submenu hidden-scrollbar"
+                                      tabindex="-1"
+                                      data-level="3"
+                                      aria-label="Submenu for {{ childlink.title | escape }}"
+                                    >
+                                      <div class="submenu-wrapper hidden-scrollbar">
+                                        <ul
+                                          class="menu-drawer-menu"
+                                          tabindex="-1"
+                                        >
+                                          {%- for grandchildlink in childlink.links -%}
+                                            <li class="menu-drawer-menu-item{% if grandchildlink.current %} menu-item--active{% endif %}">
+                                              <div class="menu-link-wrapper">
+                                                <a
+                                                  class="link link-full focus-inset"
+                                                  href="{{ grandchildlink.url }}"
+                                                  {% if grandchildlink.current %}
+                                                    aria-current="page"
+                                                  {% endif %}
+                                                >
+                                                  {{ grandchildlink.title | escape }}
+                                                </a>
+                                              </div>
+                                            </li>
+                                          {%- endfor -%}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </details>
+                                {%- endif -%}
+                              </li>
+                            {%- endfor -%}
+
+                            {% comment %} Mega 相关 {% endcomment %}
+                            {%- for id in mega_ids -%}
+                              {% liquid
+                                assign id_int = id | plus: 0
+                                for item in section.blocks
+                                  if forloop.index == id_int
+                                    assign mega = item
+                                    break
+                                  endif
+                                endfor
+
+                                if mega == blank
+                                  continue
+                                endif
+                              %}
+                              <li
+                                class="menu-drawer-menu-item menu-drawer-mega-item mega-type--{{ mega.type }} header-menu-second-level{% if mega.settings.hide_on_mobile %} small-hide{% endif %}"
+                                {{ mega.shopify_attributes }}
+                              >
+                                {%- if mega.type == 'mega_image' -%}
+                                  {% assign mega_image = mega.settings.image_mobile | default: mega.settings.image %}
+                                  {%- render 'mega-menu-image-item',
+                                    image: mega_image,
+                                    column: mega.settings.column,
+                                    heading: mega.settings.heading,
+                                    heading_effect: mega.settings.heading_effect,
+                                    url: mega.settings.url,
+                                    class: 'media--landscape'
+                                  -%}
+                                {%- elsif mega.type == 'mega_image_title_below' -%}
+                                  {% assign mega_image = mega.settings.image_mobile | default: mega.settings.image %}
+                                  {%- render 'mega-menu-image-item',
+                                    type: 'below',
+                                    image: mega_image,
+                                    column: mega.settings.column,
+                                    heading: mega.settings.heading,
+                                    url: mega.settings.url,
+                                    class: 'media--landscape'
+                                  -%}
+                                {%- elsif mega.type == 'mega_links' -%}
+                                  {% assign menu_heading = mega.settings.heading
+                                    | escape
+                                    | default: mega.settings.menu.title
+                                  %}
+                                  <details data-belong="2">
+                                    <summary
+                                      class="menu-summary focus-inset"
+                                      aria-expanded="false"
+                                      aria-controls="Drawer-Mega-{{ link.handle | capitalize }}-{{ mega.id }}"
+                                    >
+                                      <a
+                                        class="menu-title link"
+                                        {% if mega.settings.link != blank %}
+                                          href="{{ mega.settings.link }}"
+                                        {% else %}
+                                          role="link"
+                                          aria-disabled="true"
+                                        {% endif %}
+                                      >
+                                        {% assign mega_image = mega.settings.image_mobile
+                                          | default: mega.settings.image
+                                        %}
+                                        {%- if mega_image != blank -%}
+                                          <span class="media media--square media--circle">
+                                            {{ mega_image | image_url: width: 100 | image_tag: loading: 'lazy' }}
+                                          </span>
+                                        {%- endif -%}
+                                        {{ menu_heading }}
+                                      </a>
+                                      {% render 'icon-sets', icon: 'caret' %}
+                                    </summary>
+                                    <div
+                                      id="Drawer-Mega-{{ link.handle | capitalize }}-{{ mega.id }}"
+                                      class="menu-drawer-submenu has-submenu"
+                                      tabindex="-1"
+                                      data-level="3"
+                                      aria-label="Submenu for {{ menu_heading }}"
+                                    >
+                                      <div class="submenu-wrapper hidden-scrollbar">
+                                        <ul
+                                          class="menu-drawer-menu"
+                                          tabindex="-1"
+                                        >
+                                          {%- for child_link in mega.settings.menu.links -%}
+                                            <li class="menu-drawer-menu-item{% if child_link.current %} menu-item--active{% endif %}">
+                                              <div class="menu-link-wrapper">
+                                                <a
+                                                  class="link link-full focus-inset"
+                                                  href="{{ child_link.url }}"
+                                                  {% if child_link.current %}
+                                                    aria-current="page"
+                                                  {% endif %}
+                                                >
+                                                  {{ child_link.title | escape }}
+                                                </a>
+                                              </div>
+                                            </li>
+                                          {%- endfor -%}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </details>
+                                {%- elsif mega.type == 'mega_product_list' -%}
+                                  {% liquid
+                                    assign products = mega.settings.product_list
+                                    if mega.settings.collection != blank
+                                      assign products = mega.settings.collection.products
+                                    endif
+
+                                    assign title = mega.settings.heading | escape
+                                  %}
+                                  {% render 'featured-products-card',
+                                    products: products,
+                                    title: title,
+                                    number: mega.settings.show_number
+                                  %}
+                                {%- elsif mega.type == 'mega_article_list' -%}
+                                  {% assign title = mega.settings.heading | escape %}
+                                  {% render 'featured-articles-card',
+                                    articles: mega.settings.blog.articles,
+                                    title: title
+                                  %}
+                                {%- endif -%}
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      </div>
+                    </details>
+                  {%- else -%}
+                    <div class="menu-link-wrapper">
+                      <a
+                        class="link link-full first-level-item focus-inset"
+                        href="{{ link.url }}"
+                        {% if link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ link.title | escape }}
+                        {% if bubble != blank %}
+                          <span
+                            class="menu-bubble"
+                            style="background-color: {{ bubble.settings.background_color }}; color: {{ bubble.settings.foreground_color }};"
+                          >
+                            {%- if bubble.settings.icon != 'none' -%}
+                              {% render 'icon-sets', icon: bubble.settings.icon %}
+                              <span class="visually-hidden">{{ bubble.settings.icon }}</span>
+                            {%- endif -%}
+
+                            {{ bubble.settings.text | escape }}
+                          </span>
+                        {% endif %}
+                      </a>
+                    </div>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+          <div class="menu-drawer-utility">
+            {% render 'social-icons' %}
+
+            {%- if section.settings.phone != blank and section.settings.show_phone_on_mobile -%}
+              <div class="header-contact light">
+                {{ 'sections.header.need_help' | t }}
+                <a
+                  class="link font-weight-bold"
+                  href="tel:{{ section.settings.phone }}"
+                  aria-label="{{ 'accessibility.call_us' | t: phone_number: section.settings.phone }}"
+                  dir="ltr"
+                >
+                  {{- section.settings.phone -}}
+                </a>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+</header-drawer>

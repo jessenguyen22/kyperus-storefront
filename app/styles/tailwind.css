@@ -10,4 +10,243 @@
   --color-accent-500: blue;
   --font-oxanium: 'Oxanium', sans-serif;
   --font-sans: 'Source Sans 3', sans-serif;
+  
+  /* Dark theme colors */
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-surface: #111111;
+  --color-surface-variant: #1a1a1a;
+  --color-border: #333333;
+  --color-muted: #666666;
+
+  /*Text Colors*/
+  --text-gradient: linear-gradient(135deg, #ffffff 20%, #ffffff 80%, #ffffff 20%);
+  
+  /* Gradient variations */
+  --gradient-primary: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #ff6b6b 100%);
+  --gradient-accent: linear-gradient(135deg, #4834d4 0%, #686de0 50%, #4834d4 100%);
+  --gradient-white: linear-gradient(135deg, #ffffff 0%, #f1f2f6 50%, #ffffff 100%);
+  --gradient-cyber: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 50%, #00d2ff 100%);
+  --gradient-neon: linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%);
+}
+
+/* Gradient Text Utilities */
+.text-gradient {
+  background: var(--text-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+.text-gradient-primary {
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+.text-gradient-accent {
+  background: var(--gradient-accent);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+.text-gradient-white {
+  background: var(--gradient-white);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+.text-gradient-cyber {
+  background: var(--gradient-cyber);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+.text-gradient-neon {
+  background: var(--gradient-neon);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+/* Animated Gradient Text */
+.text-gradient-animate {
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Heading-specific gradient classes */
+.heading-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #e1e5e9 50%, #ffffff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.heading-gradient-primary {
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.heading-gradient-cyber {
+  background: var(--gradient-cyber);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.heading-gradient-neon {
+  background: var(--gradient-neon);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+/* KprButton Styles */
+.kpr-button {
+  background: #333333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Oxanium', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  margin-top: auto;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Primary Button (similar to .cart-checkout-button) */
+.kpr-button-primary::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: #333333;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  z-index: 1;
+}
+
+.kpr-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+  z-index: 2;
+}
+
+.kpr-button-primary:hover::before {
+  transform: translateX(0);
+}
+
+.kpr-button-primary:hover span {
+  color: black;
+}
+
+/* Secondary Button (similar to .cart-discount-form button with clip path) */
+.kpr-button-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  font-family: 'Oxanium', sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpr-button-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #333333;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 1;
+  
+}
+
+.kpr-button-secondary:hover::before {
+  transform: translateX(0);
+  
+}
+
+.kpr-button-secondary span {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.kpr-button-secondary:hover span {
+  color: white;
+}
+
+/* Global dark theme styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  min-height: 100vh;
+}
+
+/* Ensure all major containers have dark background */
+#root,
+[data-react-root],
+.app {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  min-height: 100vh;
 }

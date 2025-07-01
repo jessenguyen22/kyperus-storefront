@@ -7,6 +7,8 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
+import {GradientText, GradientHeading} from '~/components/GradientText';
+import {KprButton} from '~/components/KprButton';
 
 
 
@@ -63,6 +65,62 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      {/* Gradient Headings Demo */}
+      <section className="py-12 px-4">
+        <div className="container mx-auto text-center space-y-8">
+          <GradientHeading level={1} variant="default" className="text-6xl font-oxanium">
+            Welcome to Kyperus
+          </GradientHeading>
+          
+          <GradientHeading level={2} variant="primary" className="text-4xl font-oxanium">
+            Premium Pool Cues
+          </GradientHeading>
+          
+          <GradientHeading level={3} variant="cyber" className="text-3xl font-oxanium">
+            Cyberpunk Collection
+          </GradientHeading>
+          
+          <GradientHeading level={4} variant="neon" className="text-2xl font-oxanium">
+            Neon Series
+          </GradientHeading>
+          
+          <GradientText as="p" variant="white" className="text-xl">
+            Experience the ultimate in precision and style
+          </GradientText>
+          
+          <GradientText as="p" variant="cyber" animate className="text-lg">
+            Animated Cyber Text Effect
+          </GradientText>
+          
+          {/* KprButton Demo */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+            <KprButton variant="primary" size="lg">
+              Shop Collection
+            </KprButton>
+            <KprButton variant="secondary" size="lg">
+              Learn More
+            </KprButton>
+          </div>
+          
+          <div className="flex gap-4 justify-center items-center mt-6">
+            <KprButton variant="primary" size="md">
+              Add to Cart
+            </KprButton>
+            <KprButton variant="secondary" size="md">
+              Quick View
+            </KprButton>
+          </div>
+          
+          <div className="flex gap-4 justify-center items-center mt-4">
+            <KprButton variant="primary" size="sm">
+              Small Primary
+            </KprButton>
+            <KprButton variant="secondary" size="sm">
+              Small Secondary
+            </KprButton>
+          </div>
+        </div>
+      </section>
 
       <RecommendedProducts products={data.recommendedProducts} />
       <RecommendedProducts products={data.recommendedProducts} />
@@ -102,7 +160,9 @@ function RecommendedProducts({
 }) {
   return (
     <div className="recommended-products">
-      <h2 className='text-4xl font-bold text-accent-500 text-center mb-5 underline font-oxanium'>Recommended Products II</h2>
+      <GradientHeading level={2} variant="cyber" className="text-4xl font-bold text-center mb-5 underline font-oxanium">
+        Recommended Products II
+      </GradientHeading>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {(response) => (

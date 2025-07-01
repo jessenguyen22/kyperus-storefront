@@ -157,7 +157,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-black text-white min-h-screen">
         {data ? (
           <Analytics.Provider
             cart={data.cart}
