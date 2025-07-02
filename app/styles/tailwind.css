@@ -78,8 +78,8 @@ main {
       @apply size-full object-cover opacity-0 w-60 md:w-60 2xl:w-72 3xl:w-80;
     }
   }
-  .first-vd-wrapper {
-    .first-vd {
+  .traditional-video-wrapper {
+    .traditional-video {
       @apply size-full object-cover md:[object-position:50%_center] [object-position:75%_center];
     }
   }
