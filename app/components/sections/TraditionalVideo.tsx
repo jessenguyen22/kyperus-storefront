@@ -28,7 +28,7 @@ const TraditionalVideo = () => {
         tl.to(video, { 
           currentTime: video.duration, 
           duration: 3, 
-          ease: 'power1.inOut' // Use 'none' for smooth scrubbing
+          ease: 'none' // Use 'none' for smooth scrubbing
         }, '<');
       };
 

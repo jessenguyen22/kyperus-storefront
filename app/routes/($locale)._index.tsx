@@ -11,6 +11,7 @@ import {GradientText, GradientHeading} from '~/components/GradientText';
 import {KprButton} from '~/components/KprButton';
 import TraditionalVideo from '~/components/sections/TraditionalVideo';
 import Hero from '~/components/sections/Hero';
+import TraditionalConcept from '~/components/sections/TraditionalConcept';
 
 
 
@@ -69,6 +70,7 @@ export default function Homepage() {
     <>
     <Hero />
     <TraditionalVideo />
+    <TraditionalConcept />
     <div className="home">
       <RecommendedProducts products={data.recommendedProducts} />
       <RecommendedProducts products={data.recommendedProducts} />
