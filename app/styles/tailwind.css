@@ -6,128 +6,240 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary-500: red;
-  --color-accent-500: blue;
-  --font-oxanium: 'Oxanium', sans-serif;
-  --font-sans: 'Source Sans 3', sans-serif;
-  
-  /* Dark theme colors */
-  --color-background: #000000;
-  --color-foreground: #ffffff;
-  --color-surface: #111111;
-  --color-surface-variant: #1a1a1a;
-  --color-border: #333333;
-  --color-muted: #666666;
-
-  /*Text Colors*/
-  --text-gradient: linear-gradient(135deg, #ffffff 20%, #ffffff 80%, #ffffff 20%);
-  
-  /* Gradient variations */
-  --gradient-primary: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #ff6b6b 100%);
-  --gradient-accent: linear-gradient(135deg, #4834d4 0%, #686de0 50%, #4834d4 100%);
-  --gradient-white: linear-gradient(135deg, #ffffff 0%, #f1f2f6 50%, #ffffff 100%);
-  --gradient-cyber: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 50%, #00d2ff 100%);
-  --gradient-neon: linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%);
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-long: "Oxanium", sans-serif;
+  --font-round-bold: "Round Bold", sans-serif;
+  --color-yellow: #fff9cb;
+  --color-pink: #ffb0c4;
+  --breakpoint-sm: 40rem;
+  --breakpoint-xs: 20rem;
+  --breakpoint-3xl: 120rem;
 }
 
-/* Gradient Text Utilities */
-.text-gradient {
-  background: var(--text-gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
+body {
+  width: 100dvw;
+  overflow-x: hidden;
+  font-family: "IBM Plex Sans", sans-serif;
+  background-color: black;
 }
 
-.text-gradient-primary {
-  background: var(--gradient-primary);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
+main {
+  background: linear-gradient(
+    223.17deg,
+    rgb(28, 24, 41) 0%,
+    rgb(27, 24, 40) 8.61%,
+    rgb(25, 23, 36) 17.21%,
+    rgb(22, 21, 32) 25.82%,
+    rgb(20, 19, 28) 34.42%,
+    rgb(18, 18, 24) 43.03%,
+    rgb(17, 17, 23) 51.63%
+  );
 }
-
-.text-gradient-accent {
-  background: var(--gradient-accent);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-}
-
-.text-gradient-white {
-  background: var(--gradient-white);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-}
-
-.text-gradient-cyber {
-  background: var(--gradient-cyber);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-}
-
-.text-gradient-neon {
-  background: var(--gradient-neon);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-}
-
-/* Animated Gradient Text */
-.text-gradient-animate {
-  animation: gradient-shift 3s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
+@layer utilities {
+  .flex-center {
+    @apply flex justify-center items-center;
   }
-  50% {
-    background-position: 100% 50%;
+  .col-center {
+    @apply flex flex-col justify-center items-center;
   }
-  100% {
-    background-position: 0% 50%;
+  .abs-center {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 }
 
-/* Heading-specific gradient classes */
-.heading-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #e1e5e9 50%, #ffffff 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
+@layer components {
+  main {
+    @apply w-dvw overflow-x-hidden;
+  }
+ 
+  .gradient-title {
+    @apply md:text-[8rem] text-[5rem] font-round-bold !font-extrabold uppercase md:leading-[7rem] leading-[4.5rem] text-center bg-gradient-to-r from-white/20 via-white/80 to-white/20 bg-clip-text text-transparent w-8/10 ;
+  }
+  .hero-section {
+    @apply w-dvw h-dvh relative overflow-hidden;
+
+    .scale-out {
+      @apply object-cover md:scale-105 h-screen w-full;
+      object-position: center center; /* Căn giữa ảnh */
+    }
+    .title-logo {
+      @apply absolute top-1/14 left-1/2 -translate-x-1/2 -translate-y-1/2 h-20 md:scale-125 object-cover;
+    }
+    .trailer-logo {
+      @apply absolute bottom-2.5 w-48 left-1/2 -translate-x-1/2;
+    }
+    .play-img {
+      @apply rounded-full md:size-28 size-20 bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center;
+    }
+    .fake-logo-wrapper {
+      @apply absolute z-50 xs:top-[9.5rem] sm:top-[12.8rem] md:top-[8.5rem] 2xl:top-44 3xl:top-48 left-1/2 -translate-x-1/2;
+    }
+    .overlay-logo {
+      @apply size-full object-cover opacity-0 w-60 md:w-60 2xl:w-72 3xl:w-80;
+    }
+  }
+  .first-vd-wrapper {
+    .first-vd {
+      @apply size-full object-cover md:[object-position:50%_center] [object-position:75%_center];
+    }
+  }
+  .entrance-message {
+    @apply absolute inset-0 w-full h-dvh overflow-hidden z-20 opacity-100;
+
+    .entrance-logo {
+      @apply 2xl:w-72 3xl:w-80 md:w-60 w-48 absolute xs:top-[5rem] sm:top-[5rem] md:top-[8.5rem] 2xl:top-20 3xl:top-15 left-1/2 -translate-x-1/2;
+    }
+
+    .text-wrapper {
+      @apply mt-40 md:mt-60 2xl:mt-44 3xl:top-48 flex justify-center;
+    }
+  }
+  .jason {
+    @apply relative z-10 lg:ps-40 2xl:ps-80 ps-10 py-40 mt-60 flex lg:flex-row flex-col justify-between gap-5 w-dvw overflow-x-hidden;
+
+    h1 {
+      @apply text-yellow font-long uppercase text-8xl mb-20;
+    }
+    h2 {
+      @apply text-pink md:text-5xl text-3xl mb-7 md:pe-20 pe-10;
+    }
+    p {
+      @apply text-white md:text-2xl text-lg md:pe-28 pe-14;
+    }
+    .jason-1 {
+      @apply bg-yellow lg:h-[80vh] w-auto -translate-x-5;
+
+      img {
+        @apply size-full object-cover [object-position:5%_center] hover:scale-[0.98] transition duration-700 ease-in-out;
+      }
+    }
+    .jason-2 {
+      @apply bg-yellow h-[90vh] w-auto md:mt-36 mt-20 -translate-x-5;
+
+      img {
+        @apply size-full object-cover [object-position:80%_center] hover:scale-x-[0.97] hover:scale-y-[0.98] transition duration-700 ease-in-out;
+      }
+    }
+    .jason-3 {
+      @apply bg-yellow h-[50vh] md:w-[60%] -translate-x-5;
+
+      img {
+        @apply size-full object-cover [object-position:42%_center] hover:scale-[0.97] transition duration-700 ease-in-out;
+      }
+    }
+  }
+  .lucia {
+    @apply relative;
+  }
+  .lucia-life {
+    @apply relative z-10 py-40 mt-60 flex lg:flex-row flex-col justify-between gap-5 w-dvw overflow-x-hidden;
+
+    h1 {
+      @apply text-yellow font-long uppercase text-8xl mb-20;
+    }
+    h2 {
+      @apply text-pink md:text-5xl text-3xl mb-7 md:pe-20 pe-10;
+    }
+    p {
+      @apply text-white md:text-2xl text-lg md:pe-28 pe-14;
+    }
+    p:last-of-type {
+      @apply md:hidden block xl:block;
+    }
+    .lucia-1 {
+      @apply bg-yellow lg:h-[80vh] w-auto -translate-x-5;
+
+      img {
+        @apply size-full object-cover [object-position:85%_center] hover:scale-[0.98] transition duration-700 ease-in-out;
+      }
+    }
+    .lucia-2 {
+      @apply bg-yellow lg:h-[60vh] lg:w-[70%] w-[80%] md:my-36 my-20 lg:-translate-x-5 translate-x-5;
+
+      img {
+        @apply size-full object-cover [object-position:50%_center] hover:scale-x-[0.98] hover:scale-y-[0.98] transition duration-700 ease-in-out;
+      }
+    }
+    .lucia-3 {
+      @apply bg-yellow lg:h-[90vh] md:w-[60%] -translate-x-5;
+
+      img {
+        @apply size-full object-cover [object-position:62%_center] hover:scale-x-[0.98] hover:scale-y-[0.99] transition duration-700 ease-in-out;
+      }
+    }
+  }
+  .post-card {
+    @apply relative flex justify-center items-center pb-80 shadow-2xl;
+
+    .animated-gradient-bg {
+      @apply absolute w-full md:h-[200vh] h-[220vh] left-0 xl:-bottom-1/2 md:-bottom-5/6;
+    }
+
+    .post-card-wrapper {
+      @apply xl:mx-56 md:mx-12 mx-5 xl:h-[85vh] md:h-[40vh] h-[30vh] w-full flex justify-center items-center overflow-hidden relative;
+
+      video {
+        @apply w-full h-full 2xl:scale-x-105 object-cover;
+      }
+
+      img {
+        @apply absolute z-10 w-full h-full;
+      }
+
+      button {
+        @apply rounded-full bg-white absolute left-1/2 -translate-x-1/2 md:bottom-16 -bottom-28 md:w-fit w-2/3 px-5 md:px-7 py-4 text-lg;
+      }
+    }
+  }
+  .final {
+    @apply relative h-dvh overflow-hidden;
+
+    .final-content {
+      @apply scale-110;
+    }
+  }
+
+  .final-message {
+    @apply absolute w-full h-dvh overflow-hidden z-50 opacity-100;
+  }
 }
 
-.heading-gradient-primary {
-  background: var(--gradient-primary);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
+.black-gradient-bg {
+  background: linear-gradient(
+    223.17deg,
+    rgb(28, 24, 41) 0%,
+    rgb(27, 24, 40) 8.61%,
+    rgb(25, 23, 36) 17.21%,
+    rgb(22, 21, 32) 25.82%,
+    rgb(20, 19, 28) 34.42%,
+    rgb(18, 18, 24) 43.03%,
+    rgb(17, 17, 23) 51.63%
+  );
 }
 
-.heading-gradient-cyber {
-  background: var(--gradient-cyber);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
+.entrance-message {
+  mask-image: radial-gradient(circle at 50% 100vh, black 0%, transparent 0%);
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
 }
 
-.heading-gradient-neon {
-  background: var(--gradient-neon);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
+.mask-wrapper {
+  mask-image: url("/images/kpr-logo-text.svg");
+  mask-repeat: no-repeat;
 }
+
+.animated-gradient-bg {
+  background: linear-gradient(135deg, #1e2a52 0%, #6e4b91 100%);
+}
+
+.jason-content {
+  background: radial-gradient(ellipse, #111117 20%, transparent 70%);
+}
+
+.lucia-life-content {
+  background: radial-gradient(ellipse, #111117 20%, transparent 70%);
+}
+
 
 /* KprButton Styles */
 .kpr-button {
@@ -226,27 +338,4 @@
   color: white;
 }
 
-/* Global dark theme styles */
-* {
-  box-sizing: border-box;
-}
 
-html {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  min-height: 100vh;
-}
-
-/* Ensure all major containers have dark background */
-#root,
-[data-react-root],
-.app {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  min-height: 100vh;
-}

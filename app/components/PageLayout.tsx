@@ -38,15 +38,17 @@ export function PageLayout({
         <CartAside cart={cart} />
         <SearchAside />
         <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
-        {header && (
+        {/* Temporarily hidden header for Hero testing */}
+        {/* {header && (
           <KprHeader
             header={header}
             cart={cart}
             isLoggedIn={isLoggedIn}
             publicStoreDomain={publicStoreDomain}
           />
-        )}
+        )} */}
         <main className="min-h-screen bg-black text-white">
+          
           {children}
         </main>
         <Footer

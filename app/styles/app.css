@@ -1,13 +1,7 @@
 @import './fonts.css';
 
 /* Dark Theme Base */
-html,
-body,
-#root {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  min-height: 100vh;
-}
+
 
 /* Matrix Navigation Styles */
 .matrix-active {
@@ -117,9 +111,10 @@ body,
 }
 
 /* Ensure main content doesn't get hidden behind fixed header */
-main {
+/* Temporarily commented out for Hero testing */
+/* main {
   padding-top: var(--header-height, 136px);
-}
+} */
 
 img {
   border-radius: 4px;
