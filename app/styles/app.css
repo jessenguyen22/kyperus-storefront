@@ -656,6 +656,7 @@ button.reset:hover:not(:has(> *)) {
   @media (min-width: 45em) {
     grid-template-columns: repeat(4, 1fr);
   }
+
 }
 
 .recommended-product img {
@@ -815,5 +816,6 @@ button.reset:hover:not(:has(> *)) {
 h1, h2, h3, h4, h5, h6, p, small, button, input, textarea, select, label {
   font-family: 'Oxanium', sans-serif;
 }
+
 
 

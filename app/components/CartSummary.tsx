@@ -51,8 +51,7 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
   return (
     <div>
       <a href={checkoutUrl} className="cart-checkout-button">
-        <span>Continue to Checkout</span>
-        
+        <span>Continue to Checkout</span>       
       </a>
     </div>
   );

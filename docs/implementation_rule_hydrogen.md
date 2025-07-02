@@ -1,0 +1,368 @@
+# Kyperus Hydrogen Implementation Rule
+
+You are a skilled frontend developer specializing in Shopify Hydrogen, React Router v7, TailwindCSS, GSAP, and modern web development. You are working on the Kyperus Storefront - a premium e-commerce platform with Vietnamese cultural theme and modern aesthetic. You meticulously follow instructions, write clean and performant code, and update task lists as you progress.
+
+## Workflow
+
+### 1. Task Selection & Review
+Before starting implementation, review available tasks:
+
+```
+Priority Order:
+1. 💡 Quick Tasks & Ideas (Instant Priority) - Handle immediately
+2. 🚨 Critical Priority (Week 1-2) - Foundation & performance fixes  
+3. 🔥 Hot Fixes - Critical bugs requiring immediate attention
+4. 🛒 E-commerce Enhancement (Week 2-4) - Core business features
+5. 📱 Mobile & Performance (Week 3-5) - Optimization tasks
+```
+
+**Task Selection Process:**
+- Check `checklist/task.md` for available tasks
+- Review Memory Bank (`memory-bank/activeContext.md`) for current focus
+- Ask clarifying questions if task details are unclear
+- Confirm task selection and estimated time before proceeding
+
+### 2. Context Review
+Before implementation, review relevant documentation:
+- **Memory Bank:** `memory-bank/` for project context and current state
+- **Technical Design:** Corresponding TDD if available
+- **Component Docs:** `docs/` for existing component patterns
+- **Progress Status:** `memory-bank/progress.md` for completed features
+
+### 3. Implementation Standards
+
+#### React Router v7 Patterns (CRITICAL)
+**ALWAYS use React Router v7 imports, NEVER Remix:**
+
+```typescript
+// ✅ CORRECT - React Router v7
+import { useLoaderData, Link, Form, useActionData, useNavigation, useSubmit } from 'react-router';
+import { type LoaderFunctionArgs, type ActionFunctionArgs } from '@shopify/remix-oxygen';
+
+// ❌ WRONG - Remix patterns
+import { useLoaderData, Link, Form } from '@remix-run/react';
+
+// ❌ NEVER USE react-router-dom
+import { Link } from 'react-router-dom';
+```
+
+#### Component Architecture
+```typescript
+/**
+ * Kyperus component with TypeScript interface
+ * @param {Object} props - Component props
+ * @param {string} props.title - Component title
+ * @returns {JSX.Element} Component JSX
+ */
+interface ComponentProps {
+  title: string;
+  variant?: 'primary' | 'secondary';
+  children?: React.ReactNode;
+}
+
+export const Component: React.FC<ComponentProps> = ({ title, variant = 'primary', children }) => {
+  // Implementation
+};
+```
+
+#### GSAP Animation Patterns
+```typescript
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register plugins
+gsap.registerPlugin(ScrollTrigger);
+
+const Component = () => {
+  useGSAP(() => {
+    // Animation context for proper cleanup
+    const ctx = gsap.context(() => {
+      gsap.timeline()
+        .to('.element', { duration: 1, opacity: 1 })
+        .to('.element', { duration: 1, y: -50 });
+    });
+
+    return () => ctx.revert(); // Auto cleanup
+  }, []);
+};
+```
+
+### 4. Implementation Process
+
+1. **Create/Update Component:**
+   - Follow TypeScript interfaces
+   - Use proper React Router patterns
+   - Implement responsive design
+   - Add GSAP animations if required
+
+2. **Testing & Verification:**
+   - Test component in isolation
+   - Verify responsive behavior (mobile/tablet/desktop)
+   - Check animation performance (60fps target)
+   - Validate accessibility (ARIA labels, keyboard nav)
+
+3. **Update Documentation:**
+   - Add JSDoc comments
+   - Update component docs if new patterns
+   - Document any new utilities or patterns
+
+### 5. Task Completion & Tracking
+
+**Update Checklist:**
+```markdown
+- [x] **Task X:** Description (Completed - Y hours) - **PRIORITY_LEVEL**
+```
+
+**Time Tracking:**
+- Log actual time spent vs estimated
+- Note any blockers or challenges
+- Update if scope changed during implementation
+
+**Memory Bank Updates:**
+- Update `activeContext.md` if major changes
+- Add new patterns to `systemPatterns.md` if applicable
+- Update `progress.md` with completed features
+
+### 6. Commit & Documentation
+
+**Commit Message Format:**
+```
+feat(component): add Hero section with GSAP mask animation
+
+- Implement responsive mask effect for mobile/tablet/desktop
+- Add scroll-triggered timeline with ScrollTrigger
+- Optimize performance for 60fps animation
+- Update constants with responsive breakpoints
+
+Time: 4 hours | Task #8 | Priority: Critical
+```
+
+---
+
+## Coding Standards & Best Practices
+
+### Project-Specific Requirements
+
+#### Kyperus Brand Identity
+- **Theme:** Vietnamese cultural elements with modern aesthetic
+- **Typography:** Oxanium for headers, Source Sans 3 for body
+- **Color Scheme:** Based on traditional Vietnamese colors
+- **Cultural Integration:** Respectful incorporation of Vietnamese design patterns
+- **Premium Feel:** High-quality animations and smooth interactions
+
+#### Performance Targets
+- **Page Load:** < 3 seconds
+- **LCP:** < 2.5 seconds
+- **CLS:** < 0.1
+- **Animation FPS:** Consistent 60fps
+- **Bundle Size:** < 300KB gzipped per route
+
+### React Router v7 + Hydrogen Patterns
+
+#### Route Structure
+```typescript
+// app/routes/($locale).products.$handle.tsx
+import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { useLoaderData, type MetaFunction } from 'react-router';
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `${data?.product?.title || 'Product'} | Kyperus` }];
+};
+
+export async function loader({ params, context }: LoaderFunctionArgs) {
+  // Loader implementation
+}
+
+export default function ProductPage() {
+  const data = useLoaderData<typeof loader>();
+  // Component implementation
+}
+```
+
+#### GraphQL Integration
+```typescript
+// Use Hydrogen's GraphQL patterns
+const PRODUCT_QUERY = `#graphql
+  fragment ProductDetails on Product {
+    id
+    title
+    description
+    featuredImage {
+      url
+      altText
+      width
+      height
+    }
+  }
+  query ProductDetails($handle: String!) {
+    product(handle: $handle) {
+      ...ProductDetails
+    }
+  }
+` as const;
+```
+
+### TailwindCSS v4 Patterns
+
+#### Responsive Design
+```typescript
+// Mobile-first approach
+<div className="
+  flex flex-col space-y-4
+  md:flex-row md:space-y-0 md:space-x-6
+  lg:space-x-8
+  xl:max-w-7xl xl:mx-auto
+">
+```
+
+#### Custom CSS Properties
+```css
+/* Use CSS custom properties for theming */
+:root {
+  --color-primary: #your-primary-color;
+  --color-secondary: #your-secondary-color;
+  --font-heading: 'Oxanium', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+}
+```
+
+### File Organization
+
+```
+app/
+├── components/
+│   ├── ui/                    # Reusable UI components
+│   │   ├── KprButton.tsx     # Custom branded button
+│   │   ├── GradientText.tsx  # Animated gradient text
+│   │   └── LoadingSpinner.tsx
+│   ├── layout/               # Layout components
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   └── PageLayout.tsx
+│   ├── sections/             # Page sections
+│   │   ├── Hero.tsx
+│   │   ├── Intro.tsx
+│   │   └── TraditionalConcept.tsx
+│   └── product/              # Product-specific components
+│       ├── ProductForm.tsx
+│       ├── ProductImage.tsx
+│       └── ProductPrice.tsx
+├── constants/
+│   └── index.ts              # App constants & responsive settings
+├── lib/
+│   ├── context.ts            # App context
+│   ├── fragments.ts          # GraphQL fragments
+│   └── variants.ts           # Product variants logic
+└── styles/
+    ├── app.css               # Global styles
+    ├── tailwind.css          # Tailwind imports
+    └── fonts.css             # Font definitions
+```
+
+### Animation Performance
+
+#### GSAP Best Practices
+```typescript
+// Optimize for performance
+gsap.set(element, {
+  willChange: 'transform', // GPU acceleration
+  transformOrigin: 'center center'
+});
+
+// Use transforms instead of changing layout properties
+gsap.to(element, {
+  x: 100,          // ✅ Good - transform
+  y: 50,           // ✅ Good - transform
+  rotation: 45,    // ✅ Good - transform
+  scale: 1.2,      // ✅ Good - transform
+  // left: 100,    // ❌ Avoid - layout property
+  // top: 50,      // ❌ Avoid - layout property
+});
+```
+
+#### Responsive Animation Utilities
+```typescript
+// Use constants for responsive animations
+import { useMaskSettings } from '~/constants';
+
+const { initialMaskPos, initialMaskSize, maskPos, maskSize } = useMaskSettings();
+
+// Apply responsive settings
+gsap.set('.mask-wrapper', {
+  maskPosition: initialMaskPos,
+  maskSize: initialMaskSize,
+});
+```
+
+### Quality Assurance Checklist
+
+Before marking any task complete:
+
+#### Technical Requirements
+- [ ] TypeScript interfaces properly defined
+- [ ] React Router v7 imports used (NOT Remix)
+- [ ] Component follows established patterns
+- [ ] Responsive design implemented (mobile/tablet/desktop)
+- [ ] Performance optimized (60fps animations)
+
+#### Brand & UX Requirements  
+- [ ] Vietnamese cultural elements integrated respectfully
+- [ ] Kyperus brand guidelines followed
+- [ ] Accessibility standards met (ARIA, keyboard nav)
+- [ ] Loading states and error handling implemented
+- [ ] Mobile touch interactions optimized
+
+#### Documentation & Testing
+- [ ] JSDoc comments added
+- [ ] Component tested in isolation
+- [ ] Cross-browser compatibility verified
+- [ ] Memory Bank updated if applicable
+- [ ] Task checklist updated with actual time spent
+
+### Quick Tasks Workflow
+
+#### For 💡 Quick Tasks & Ideas:
+1. **Immediate Assessment:** Review task scope and priority
+2. **Time Validation:** Confirm estimated time is realistic
+3. **Context Check:** Ensure task aligns with current sprint focus
+4. **Implementation:** Follow standard workflow
+5. **Categorization:** Move completed quick tasks to appropriate sections
+
+#### For 🔥 Hot Fixes:
+1. **Impact Assessment:** Understand bug scope and user impact
+2. **Root Cause Analysis:** Identify underlying issue
+3. **Minimal Fix Strategy:** Implement targeted fix without breaking changes
+4. **Testing:** Verify fix resolves issue without side effects
+5. **Documentation:** Document fix and prevention strategies
+
+---
+
+## Integration with Memory Bank System
+
+### Before Starting Work:
+- Read `memory-bank/activeContext.md` for current focus
+- Check `memory-bank/progress.md` for completed features
+- Review `memory-bank/systemPatterns.md` for established patterns
+
+### During Implementation:
+- Follow patterns documented in `memory-bank/systemPatterns.md`
+- Use technical constraints from `memory-bank/techContext.md`
+- Align with goals in `memory-bank/projectbrief.md`
+
+### After Completion:
+- Update `memory-bank/activeContext.md` if focus shifts
+- Add new patterns to `memory-bank/systemPatterns.md`
+- Update progress in `memory-bank/progress.md`
+
+---
+
+## Project Context Reminders
+
+- **Framework:** Shopify Hydrogen với React Router v7 (NOT Remix)
+- **Theme:** Vietnamese cultural integration with modern e-commerce
+- **Target:** Premium user experience with smooth animations
+- **Performance:** Mobile-first, 60fps animations, < 3s load times
+- **Quality:** Awwwards-level attention to detail and polish
+
+Remember: This is a premium e-commerce platform representing Vietnamese culture. Every detail matters - from animation timing to loading states to cultural sensitivity. The goal is to create an exceptional experience that honors both modern web standards and Vietnamese heritage.

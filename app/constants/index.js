@@ -23,9 +23,9 @@ export const useMaskSettings = () => {
   }
 
   return {
-    initialMaskPos: "50% 22.03%",
+    initialMaskPos: "50% 22.3%",
     initialMaskSize: "4000% 4000%",
-    maskPos: "50% 22%", // Đo từ khoảng cách 50% theo chiều ngang và 22% theo chiều dọc của container
+    maskPos: "50% 22.3%", // Đo từ khoảng cách 50% theo chiều ngang và 22% theo chiều dọc của container
     maskSize: "17% 17%",
   };
 };
